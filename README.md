@@ -12,3 +12,7 @@ A simple hangman game that outputs directly into the terminal. While the code fo
 noughts_and_crosses.py
 
 A simple noughts and crosses game that outputs directly into the terminal. The game operates around a series of key functions and two while loops. I particually enjoy how compact this piece of code is. Writing the player and computer moves as seperate functions allowed me to create alternative orders for the game without having to write out the code again in long form. This means that even though the code only ever calls upon these functions once per loop there is limited unnecessary code repitition. 
+
+argus_news_scraper.py
+
+A news program that scrapes articals and headlines from my local newspapers website. I created this to expriement with two interlinked moduals, the Requests modual and BeautifulSoup. Using these two moduals together lets code extract data directly off the web and then search through that code to directly extract information. While this program is not complicated the goal of extracted data this way taught me a couple of things. Firstly that the requests modual is not the best method of webscraping in all circumstances. I have since experimented using the selenium modual which though more complicated and slower to run, does appear to have a wider scope of use. Secondly, in creating this program I had to learn the basics of CSS. This proved difficult to do as I went along, so I have decided to learn CSS to make this process quicker in the future.
