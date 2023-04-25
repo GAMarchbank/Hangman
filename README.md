@@ -20,3 +20,8 @@ A news program that scrapes articals and headlines from my local newspapers webs
 wiki_date_scrap.py
 
 This program creates and displays a windows popup with information about an individual who died on the current day of the month. It combines several python moduals including requests, BeautifulSoup, BytesIO, win11toast, random, and datetime. The program opens the wikipedia page for the current day of the month, then scrapes a data for notable people who died on that particual day. It then selects one of these people at random and searches their wikipedia page to extract some information about then. This information is then displayed on a windows popup created by win11toast. This program was a joy to create, I particually enjoied combining several python moduals together. One of the major difficulties I had to overcome was the often inconsistant source code of the wikipedia website. Using several try except gateways I was able to create alternative routes for data extraction and also give the program a way of recognising when the source code was too divergent and it should restart witha new individual.
+
+flight_battle
+
+
+This program is a version of the board game Raven's Flight. I'm mainly writing it to exmperiment with unittesting and am building the testing enviroments before I build the program. I also play to play with machine learning once i have constructed the program to create more complicated computer AI. This step will come later howver. The program is still in its early stages and is very much a work in progress. 
