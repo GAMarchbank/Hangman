@@ -34,11 +34,13 @@ class TestFlights(unittest.TestCase):
     
     def test_game_field_transformer(self):
         self.game_field = flight_battle.game_field_transformer(self.game_field_template)
-        for items in self.game_field:
-            self.assertEqual(self.game_field[items]['L'], self.game_field_template[items][0], 'The left row of the game field does not match its template.')
-            self.assertEqual(self.game_field[items]['R'], self.game_field_template[items][1], 'The right row of the game field does not match its template.')
+        for items in self.game_field['L']:
+            self.assertEqual(self.game_field['L'][items]['card'], self.game_field_template[items][0], 'The left row of the game field does not match its template.')
+            self.assertEqual(self.game_field['L'][items]['on_map'], True, "The left row of the game field contains cards that arn't located on the map.")
+        for items in self.game_field['R']:
+            self.assertEqual(self.game_field['R'][items]['card'], self.game_field_template[items][1], 'The right row of the game field does not match its template.')
+            self.assertEqual(self.game_field['R'][items]['on_map'], True, "The right row of the game field contains cards that arn't located on the map.")
         
-
 class TestPlayersDecks(unittest.TestCase):
     def setUp(self):
         self.user = flight_battle.Players(True, 'L')
@@ -106,6 +108,7 @@ class TestPlayersDecks(unittest.TestCase):
 
 class ComputerPlayFunctions(unittest.TestCase):
     def setUp(self):
+        self.op_computer = flight_battle.Players(False, 'R')
         self.computer = flight_battle.Players(False, 'L')
         self.game_field_template = flight_battle.game_field_template_gen()
         self.game_field = flight_battle.game_field_transformer(self.game_field_template)
@@ -117,7 +120,7 @@ class ComputerPlayFunctions(unittest.TestCase):
     
     def test_computer_draws_and_discards_cards(self):
         orginal_hand_size = len(self.computer_hand)
-        self.computer.end_turn_draw_new_cards(self.computer_hand)
+        self.computer.end_turn_draw_new_cards()
         self.computer_hand = self.computer.return_hand()
         self.assertGreater(len(self.computer_hand), orginal_hand_size, 'The computers hand has not increased in size.')
         self.computer.discard_cards(self.computer_hand)
@@ -127,15 +130,13 @@ class ComputerPlayFunctions(unittest.TestCase):
     def test_computer_make_all_available_terrain_moves_and_use_cards(self):
         while True:
             hand_num = len(self.computer.return_hand())
-            move_check = self.computer.make_move(self.game_field)
+            move_check = self.computer.make_move(self.game_field, self.op_computer.return_location())
             if move_check == False:
                 break
             else:
                 self.assertEqual(len(self.computer.return_hand()), hand_num -1, 'The computer did not dicard the card after it used it.')
         next_coordinate_num = self.computer.return_location()['coordinate'] + 1
-        self.assertNotIn(self.game_field[next_coordinate_num][self.computer.return_location()['side']], self.computer_hand, 'The computer has not played all of its availble terrain cards.')
-    
-    
+        self.assertNotIn(self.game_field[self.computer.return_location()['side']][next_coordinate_num]['card'], self.computer_hand, 'The computer has not played all of its availble terrain cards.')
         
 
 if __name__ == '__main__':

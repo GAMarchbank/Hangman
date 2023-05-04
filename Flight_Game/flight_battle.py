@@ -27,9 +27,10 @@ def game_field_template_gen():
     return out_dic
 
 def game_field_transformer(template):
-    out_dic = {}
+    out_dic = {'L': {}, 'R': {}}
     for items in template:
-        out_dic[items] = {'L': template[items][0], 'R': template[items][1]}
+        out_dic['L'][items] = {'card': template[items][0], 'on_map': True}
+        out_dic['R'][items] = {'card': template[items][1], 'on_map': True}
     return out_dic
 
 
@@ -61,6 +62,7 @@ class Players:
         self.trick_deck = trick_deck
         self.terrain_deck = terrain_deck
         self.hand = []
+        self.l_r = l_r
         if l_r == 'L':
             self.location = {'side': 'L', 'coordinate': 0}
         else:
@@ -111,10 +113,9 @@ class Players:
             self.hand = self.computer_cards_draw(7)
     
     # add human 
-    def end_turn_draw_new_cards(self, current_hand):
+    def end_turn_draw_new_cards(self):
         if self.is_human == False:
-            current_hand.append(self.computer_cards_draw(3))
-            self.hand = current_hand
+            self.hand.append(self.computer_cards_draw(3))
             
     # add human 
     def discard_cards(self, current_hand):
@@ -125,21 +126,53 @@ class Players:
                     current_hand.remove(card)
             self.hand = current_hand
     
+    def computer_trick_card_selectors(self, game_field, enemy_location):
+        while True:
+            trick_card_selector_list =[]
+            if 'swap/pickup' in self.hand:
+                trick_card_selector_list.append({'move': 'pickup', 'card': 'swap/pickup'})
+                if self.l_r == self.location['side']:
+                    pass
+                    # this is gonna be really hard. possibly worth thinking this through fully before i make any further moves. 
+                else:
+                    pass
+                if self.l_r != enemy_location['side']:
+                    pass
+                else:
+                    pass
+                    
+            if 'shift/rotate' in self.hand:
+                pass
+            if 'forwards/backwards' in self.hand:
+                pass
+            if 'add/remove' in self.hand:
+                pass
+            break
+        return game_field
+
     # add human
-    def make_move(self, game_field):
+    def make_move(self, game_field, enemy_location):
         if self.is_human == False:
             previous_card = None
+            trick_card_check = False
             while True:
-                if game_field[self.location['coordinate'] + 1][self.location['side']] == previous_card:
-                    self.location['coordinate'] += 1
-                elif game_field[self.location['coordinate'] + 1][self.location['side']] in self.hand:
-                    self.location['coordinate'] += 1
-                    previous_card = game_field[self.location['coordinate']][self.location['side']]
-                    self.hand.remove(previous_card)
-                else:
-                    return False
-                    
-    
+                while True:
+                    if game_field[self.location['side']][self.location['coordinate'] + 1]['card'] == previous_card:
+                        self.location['coordinate'] += 1
+                    elif game_field[self.location['side']][self.location['coordinate'] + 1]['card'] in self.hand:
+                        self.location['coordinate'] += 1
+                        previous_card = game_field[self.location['side']][self.location['coordinate']]['card']
+                        self.hand.remove(previous_card)
+                    else:
+                        if trick_card_check == True:
+                            return False
+                        else:
+                            break
+                game_field = self.computer_trick_card_selectors(game_field, enemy_location) 
+                trick_card_check = True
+            
+            
+            
             
 
 if __name__ == '__main__':
