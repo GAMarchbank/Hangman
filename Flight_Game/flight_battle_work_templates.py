@@ -4,7 +4,8 @@
  'add/remove']
 
 
-{'L': {1: {'card': 'forest', 'on_map': True}, 2: {'card': 'fields', 'on_map': True}, 
+trial_game_field_one = {'L': {
+      1: {'card': 'forest', 'on_map': True}, 2: {'card': 'fields', 'on_map': True}, 
        3: {'card': 'valley', 'on_map': True}, 4: {'card': 'fields', 'on_map': True}, 
        5: {'card': 'desert', 'on_map': True}, 6: {'card': 'forest', 'on_map': True}, 
        7: {'card': 'desert', 'on_map': True}, 8: {'card': 'forest', 'on_map': True},
@@ -20,3 +21,58 @@
        11: {'card': 'desert', 'on_map': True}, 12: {'card': 'mountains', 'on_map': True},
        13: {'card': 'forest', 'on_map': True}, 14: {'card': 'fields', 'on_map': True}, 
        15: {'card': 'mountains', 'on_map': True}, 16: {'card': 'forest', 'on_map': True}}}
+
+trial_game_field_two = {'L': {
+      1: {'card': 'forest', 'on_map': True}, 2: {'card': 'fields', 'on_map': True}, 
+      3: {'card': 'forest', 'on_map': False}, 4: {'card': 'forest', 'on_map': False},
+       5: {'card': 'valley', 'on_map': True}, 6: {'card': 'fields', 'on_map': True}, 
+       7: {'card': 'desert', 'on_map': True}, 8: {'card': 'forest', 'on_map': True}, 
+       9: {'card': 'desert', 'on_map': True}, 10: {'card': 'forest', 'on_map': True},
+       11: {'card': 'valley', 'on_map': True}, 12: {'card': 'fields', 'on_map': True}, 
+       13: {'card': 'valley', 'on_map': True}, 14: {'card': 'forest', 'on_map': True}, 
+       15: {'card': 'mountains', 'on_map': True}, 16: {'card': 'fields', 'on_map': True}, 
+       17: {'card': 'mountains', 'on_map': True}, 18: {'card': 'desert', 'on_map': True}}, 
+ 'R': {1: {'card': 'desert', 'on_map': True}, 2: {'card': 'mountains', 'on_map': True}, 
+       3: {'card': 'desert', 'on_map': True}, 4: {'card': 'forest', 'on_map': True}, 
+       5: {'card': 'valley', 'on_map': True}, 6: {'card': 'forest', 'on_map': True}, 
+       7: {'card': 'valley', 'on_map': True}, 8: {'card': 'forest', 'on_map': True}, 
+       9: {'card': 'valley', 'on_map': True}, 10: {'card': 'mountains', 'on_map': True},
+       11: {'card': 'desert', 'on_map': True}, 12: {'card': 'mountains', 'on_map': True},
+       13: {'card': 'forest', 'on_map': True}, 14: {'card': 'fields', 'on_map': True}, 
+       15: {'card': 'mountains', 'on_map': True}, 16: {'card': 'forest', 'on_map': True}}}
+
+specific_card_dic = [{'L': {'card': 'forest', 'coordinate': 1} , 'R': {'card': 'desert', 'coordinate': 1}},
+                     {'L': {'card': 'fields', 'coordinate': 2} , 'R': {'card': 'mountains', 'coordinate': 2}},
+                     {'L': {'card': 'valley', 'coordinate': 3} , 'R': {'card': 'desert', 'coordinate': 3}},
+                     {'L': {'card': 'fields', 'coordinate': 4} , 'R': {'card': 'forest', 'coordinate': 4}},
+                     {'L': {'card': 'desert', 'coordinate': 5} , 'R': {'card': 'valley', 'coordinate': 5}},
+                     {'L': {'card': 'forest', 'coordinate': 6} , 'R': {'card': 'forest', 'coordinate': 6}},
+                     {'L': {'card': 'desert', 'coordinate': 7} , 'R': {'card': 'valley', 'coordinate': 7}},
+                     {'L': {'card': 'forest', 'coordinate': 8} , 'R': {'card': 'forest', 'coordinate': 8}},
+                     {'L': {'card': 'valley', 'coordinate': 9} , 'R': {'card': 'valley', 'coordinate': 9}},
+                     {'L': {'card': 'fields', 'coordinate': 10} , 'R': {'card': 'mountains', 'coordinate': 10}},
+                     {'L': {'card': 'valley', 'coordinate': 11} , 'R': {'card': 'desert', 'coordinate': 11}},
+                     {'L': {'card': 'forest', 'coordinate': 12} , 'R': {'card': 'mountains', 'coordinate': 12}},
+                     {'L': {'card': 'mountains', 'coordinate': 13} , 'R': {'card': 'forest', 'coordinate': 13}},
+                     {'L': {'card': 'fields', 'coordinate': 14} , 'R': {'card': 'fields', 'coordinate': 14}},
+                     {'L': {'card': 'mountains', 'coordinate': 15} , 'R': {'card': 'mountains', 'coordinate': 15}},
+                     {'L': {'card': 'desert', 'coordinate': 16} , 'R': {'card': 'forest', 'coordinate': 16}}]
+
+specific_card_dic_two = [{'L': {'card': 'forest', 'coordinate': 1} , 'R': {'card': 'desert', 'coordinate': 1}},
+                     {'L': {'card': 'fields', 'coordinate': 2} , 'R': {'card': 'mountains', 'coordinate': 2}},
+                     {'L': [{'card': 'forest', 'coordinate': 3}, {'card': 'forest', 'coordinate': 4}]},
+                     {'L': {'card': 'valley', 'coordinate': 5} , 'R': {'card': 'desert', 'coordinate': 3}},
+                     {'L': {'card': 'fields', 'coordinate': 6} , 'R': {'card': 'forest', 'coordinate': 4}},
+                     {'L': {'card': 'desert', 'coordinate': 7} , 'R': {'card': 'valley', 'coordinate': 5}},
+                     {'L': {'card': 'forest', 'coordinate': 8} , 'R': {'card': 'forest', 'coordinate': 6}},
+                     {'L': {'card': 'desert', 'coordinate': 9} , 'R': {'card': 'valley', 'coordinate': 7}},
+                     {'L': {'card': 'forest', 'coordinate': 10} , 'R': {'card': 'forest', 'coordinate': 8}},
+                     {'L': {'card': 'valley', 'coordinate': 11} , 'R': {'card': 'valley', 'coordinate': 9}},
+                     {'L': {'card': 'fields', 'coordinate': 12} , 'R': {'card': 'mountains', 'coordinate': 10}},
+                     {'L': {'card': 'valley', 'coordinate': 13} , 'R': {'card': 'desert', 'coordinate': 11}},
+                     {'L': {'card': 'forest', 'coordinate': 14} , 'R': {'card': 'mountains', 'coordinate': 12}},
+                     {'L': {'card': 'mountains', 'coordinate': 15} , 'R': {'card': 'forest', 'coordinate': 13}},
+                     {'L': {'card': 'fields', 'coordinate': 16} , 'R': {'card': 'fields', 'coordinate': 14}},
+                     {'L': {'card': 'mountains', 'coordinate': 17} , 'R': {'card': 'mountains', 'coordinate': 15}},
+                     {'L': {'card': 'desert', 'coordinate': 18} , 'R': {'card': 'forest', 'coordinate': 16}}]
+

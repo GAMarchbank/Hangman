@@ -128,16 +128,91 @@ class ComputerPlayFunctions(unittest.TestCase):
         self.assertEqual(len(self.computer_hand), 7, 'The computer has not discarded cards enough cards.')
         
     def test_computer_make_all_available_terrain_moves_and_use_cards(self):
-        while True:
-            hand_num = len(self.computer.return_hand())
-            move_check = self.computer.make_move(self.game_field, self.op_computer.return_location())
-            if move_check == False:
-                break
-            else:
-                self.assertEqual(len(self.computer.return_hand()), hand_num -1, 'The computer did not dicard the card after it used it.')
+        self.computer.set_test()
+        hand_num = len(self.computer.return_hand())
+        cards_used = self.computer.make_move(self.game_field, self.op_computer.return_location())
         next_coordinate_num = self.computer.return_location()['coordinate'] + 1
         self.assertNotIn(self.game_field[self.computer.return_location()['side']][next_coordinate_num]['card'], self.computer_hand, 'The computer has not played all of its availble terrain cards.')
+        self.assertEqual(len(self.computer.return_hand()), hand_num - cards_used, 'The computer has not discarded all played cards.')
+
+class test_ai_game_field_sorter(unittest.TestCase):
+    def setUp(self):
+        self.trial_game_field_one = {'L': {
+      1: {'card': 'forest', 'on_map': True}, 2: {'card': 'fields', 'on_map': True}, 
+       3: {'card': 'valley', 'on_map': True}, 4: {'card': 'fields', 'on_map': True}, 
+       5: {'card': 'desert', 'on_map': True}, 6: {'card': 'forest', 'on_map': True}, 
+       7: {'card': 'desert', 'on_map': True}, 8: {'card': 'forest', 'on_map': True},
+       9: {'card': 'valley', 'on_map': True}, 10: {'card': 'fields', 'on_map': True}, 
+       11: {'card': 'valley', 'on_map': True}, 12: {'card': 'forest', 'on_map': True}, 
+       13: {'card': 'mountains', 'on_map': True}, 14: {'card': 'fields', 'on_map': True}, 
+       15: {'card': 'mountains', 'on_map': True}, 16: {'card': 'desert', 'on_map': True}}, 
+ 'R': {1: {'card': 'desert', 'on_map': True}, 2: {'card': 'mountains', 'on_map': True}, 
+       3: {'card': 'desert', 'on_map': True}, 4: {'card': 'forest', 'on_map': True}, 
+       5: {'card': 'valley', 'on_map': True}, 6: {'card': 'forest', 'on_map': True}, 
+       7: {'card': 'valley', 'on_map': True}, 8: {'card': 'forest', 'on_map': True}, 
+       9: {'card': 'valley', 'on_map': True}, 10: {'card': 'mountains', 'on_map': True},
+       11: {'card': 'desert', 'on_map': True}, 12: {'card': 'mountains', 'on_map': True},
+       13: {'card': 'forest', 'on_map': True}, 14: {'card': 'fields', 'on_map': True}, 
+       15: {'card': 'mountains', 'on_map': True}, 16: {'card': 'forest', 'on_map': True}}}
+        self.trial_game_field_two = {'L': {
+      1: {'card': 'forest', 'on_map': True}, 2: {'card': 'fields', 'on_map': True}, 
+       3: {'card': 'valley', 'on_map': False}, 4: {'card': 'fields', 'on_map': False}, 
+       5: {'card': 'desert', 'on_map': True}, 6: {'card': 'forest', 'on_map': True}, 
+       7: {'card': 'desert', 'on_map': True}, 8: {'card': 'forest', 'on_map': True},
+       9: {'card': 'valley', 'on_map': True}, 10: {'card': 'fields', 'on_map': True}, 
+       11: {'card': 'valley', 'on_map': True}, 12: {'card': 'forest', 'on_map': True}, 
+       13: {'card': 'mountains', 'on_map': True}, 14: {'card': 'fields', 'on_map': True}, 
+       15: {'card': 'mountains', 'on_map': True}, 16: {'card': 'desert', 'on_map': True}}, 
+       17: {'card': 'valley', 'on_map': True}, 18: {'card': 'fields', 'on_map': True},
+ 'R': {1: {'card': 'desert', 'on_map': True}, 2: {'card': 'mountains', 'on_map': True}, 
+       3: {'card': 'desert', 'on_map': True}, 4: {'card': 'forest', 'on_map': True}, 
+       5: {'card': 'valley', 'on_map': True}, 6: {'card': 'forest', 'on_map': True}, 
+       7: {'card': 'valley', 'on_map': True}, 8: {'card': 'forest', 'on_map': True}, 
+       9: {'card': 'valley', 'on_map': True}, 10: {'card': 'mountains', 'on_map': True},
+       11: {'card': 'desert', 'on_map': True}, 12: {'card': 'mountains', 'on_map': True},
+       13: {'card': 'forest', 'on_map': True}, 14: {'card': 'fields', 'on_map': True}, 
+       15: {'card': 'mountains', 'on_map': True}, 16: {'card': 'forest', 'on_map': True}}}
+    
+    def test_game_field_sorter(self):
+        game_field_one_sorted = [{'L': {'card': 'forest', 'coordinate': 1} , 'R': {'card': 'desert', 'coordinate': 1}},
+                     {'L': {'card': 'fields', 'coordinate': 2} , 'R': {'card': 'mountains', 'coordinate': 2}},
+                     {'L': {'card': 'valley', 'coordinate': 3} , 'R': {'card': 'desert', 'coordinate': 3}},
+                     {'L': {'card': 'fields', 'coordinate': 4} , 'R': {'card': 'forest', 'coordinate': 4}},
+                     {'L': {'card': 'desert', 'coordinate': 5} , 'R': {'card': 'valley', 'coordinate': 5}},
+                     {'L': {'card': 'forest', 'coordinate': 6} , 'R': {'card': 'forest', 'coordinate': 6}},
+                     {'L': {'card': 'desert', 'coordinate': 7} , 'R': {'card': 'valley', 'coordinate': 7}},
+                     {'L': {'card': 'forest', 'coordinate': 8} , 'R': {'card': 'forest', 'coordinate': 8}},
+                     {'L': {'card': 'valley', 'coordinate': 9} , 'R': {'card': 'valley', 'coordinate': 9}},
+                     {'L': {'card': 'fields', 'coordinate': 10} , 'R': {'card': 'mountains', 'coordinate': 10}},
+                     {'L': {'card': 'valley', 'coordinate': 11} , 'R': {'card': 'desert', 'coordinate': 11}},
+                     {'L': {'card': 'forest', 'coordinate': 12} , 'R': {'card': 'mountains', 'coordinate': 12}},
+                     {'L': {'card': 'mountains', 'coordinate': 13} , 'R': {'card': 'forest', 'coordinate': 13}},
+                     {'L': {'card': 'fields', 'coordinate': 14} , 'R': {'card': 'fields', 'coordinate': 14}},
+                     {'L': {'card': 'mountains', 'coordinate': 15} , 'R': {'card': 'mountains', 'coordinate': 15}},
+                     {'L': {'card': 'desert', 'coordinate': 16} , 'R': {'card': 'forest', 'coordinate': 16}}]
+        new = flight_battle.computer_play_field_sorter(self.trial_game_field_one)
+        self.assertEqual(new, game_field_one_sorted, 'The game field does not match the template.')
         
+    def test_game_field_sorter_with_added_cards(self):
+        game_field_two_sorter = [{'L': {'card': 'forest', 'coordinate': 1} , 'R': {'card': 'desert', 'coordinate': 1}},
+                     {'L': {'card': 'fields', 'coordinate': 2} , 'R': {'card': 'mountains', 'coordinate': 2}},
+                     {'L': [{'card': 'forest', 'coordinate': 3}, {'card': 'forest', 'coordinate': 4}]},
+                     {'L': {'card': 'valley', 'coordinate': 5} , 'R': {'card': 'desert', 'coordinate': 3}},
+                     {'L': {'card': 'fields', 'coordinate': 6} , 'R': {'card': 'forest', 'coordinate': 4}},
+                     {'L': {'card': 'desert', 'coordinate': 7} , 'R': {'card': 'valley', 'coordinate': 5}},
+                     {'L': {'card': 'forest', 'coordinate': 8} , 'R': {'card': 'forest', 'coordinate': 6}},
+                     {'L': {'card': 'desert', 'coordinate': 9} , 'R': {'card': 'valley', 'coordinate': 7}},
+                     {'L': {'card': 'forest', 'coordinate': 10} , 'R': {'card': 'forest', 'coordinate': 8}},
+                     {'L': {'card': 'valley', 'coordinate': 11} , 'R': {'card': 'valley', 'coordinate': 9}},
+                     {'L': {'card': 'fields', 'coordinate': 12} , 'R': {'card': 'mountains', 'coordinate': 10}},
+                     {'L': {'card': 'valley', 'coordinate': 13} , 'R': {'card': 'desert', 'coordinate': 11}},
+                     {'L': {'card': 'forest', 'coordinate': 14} , 'R': {'card': 'mountains', 'coordinate': 12}},
+                     {'L': {'card': 'mountains', 'coordinate': 15} , 'R': {'card': 'forest', 'coordinate': 13}},
+                     {'L': {'card': 'fields', 'coordinate': 16} , 'R': {'card': 'fields', 'coordinate': 14}},
+                     {'L': {'card': 'mountains', 'coordinate': 17} , 'R': {'card': 'mountains', 'coordinate': 15}},
+                     {'L': {'card': 'desert', 'coordinate': 18} , 'R': {'card': 'forest', 'coordinate': 16}}]
+        new = flight_battle.computer_play_field_sorter(self.trial_game_field_two)
+        self.assertEqual(new, game_field_two_sorter, 'The game field with added cards does not match the template.')
 
 if __name__ == '__main__':
     unittest.main()

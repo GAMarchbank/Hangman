@@ -1,4 +1,5 @@
 import random
+from flight_battle_work_templates import trial_game_field_two
 
 
 def game_field_template_gen():
@@ -54,6 +55,41 @@ def deck_shuffle(terrain_trick):
         deck.remove(card)
     return out_deck
 
+# maybe think about refigering this with unque code numbers for each card. might be an easier way of doing what im trying to do  
+def computer_play_field_sorter(game_field):
+    card_dupe_slip = False
+    r_num = len(game_field['R'])
+    l_num = len(game_field['L'])
+    if r_num > l_num:
+        out_num = r_num
+    else:
+        out_num = l_num
+    l_num = 0
+    r_num = 0
+    card_list = []
+    for numbers in range(1, out_num+1):
+        specific_card_dic = {}
+        if game_field['R'][numbers + r_num]['on_map'] == False or game_field['L'][numbers + l_num]['on_map'] == False:
+            
+            try:
+                if game_field['R'][numbers + r_num]['on_map'] == True:
+                    specific_card_dic['R'] = {'card': game_field['R'][numbers + r_num]['card'], 'coordinate': numbers + r_num}
+                else:
+                    specific_card_dic['R'] = [{'card': game_field['R'][numbers + r_num]['card'], 'coordinate': numbers + r_num}, {'card': game_field['R'][numbers + r_num + 1]['card'], 'coordinate': numbers + r_num + 1}]
+                    r_num += 2
+            except Exception:
+                pass
+            try:
+                if game_field['L'][numbers + l_num]['on_map'] == True:
+                    specific_card_dic['L'] = {'card': game_field['L'][numbers + l_num]['card'], 'coordinate': numbers + l_num}
+                else:
+                    specific_card_dic['L'] = [{'card': game_field['L'][numbers + l_num]['card'], 'coordinate': numbers + l_num}, {'card': game_field['L'][numbers + l_num + 1]['card'], 'coordinate': numbers + l_num + 1}]
+                    l_num += 2
+            except Exception:
+                pass
+        card_list.append(specific_card_dic)
+    return card_list
+
 class Players:
     def __init__(self, is_human, l_r):
         self.is_human = is_human
@@ -67,6 +103,10 @@ class Players:
             self.location = {'side': 'L', 'coordinate': 0}
         else:
             self.location = {'side': 'R', 'coordinate': 0}
+        self.test_check = False
+        
+    def set_test(self):
+        self.test_check = True
     
     def return_hand(self):
         return self.hand
@@ -155,6 +195,8 @@ class Players:
         if self.is_human == False:
             previous_card = None
             trick_card_check = False
+            if self.test_check == True:
+                cards_used = 0
             while True:
                 while True:
                     if game_field[self.location['side']][self.location['coordinate'] + 1]['card'] == previous_card:
@@ -163,9 +205,13 @@ class Players:
                         self.location['coordinate'] += 1
                         previous_card = game_field[self.location['side']][self.location['coordinate']]['card']
                         self.hand.remove(previous_card)
+                        cards_used += 1
                     else:
                         if trick_card_check == True:
-                            return False
+                            if self.test_check == True:
+                                return cards_used
+                            else:
+                                return False
                         else:
                             break
                 game_field = self.computer_trick_card_selectors(game_field, enemy_location) 
@@ -176,8 +222,9 @@ class Players:
             
 
 if __name__ == '__main__':
-    computer = Players(False, 'L')
-    game_field_template = game_field_template_gen()
-    game_field = game_field_transformer(game_field_template)
+    # computer = Players(False, 'L')
+    # game_field_template = game_field_template_gen()
+    # game_field = game_field_transformer(game_field_template)
+    game_field = computer_play_field_sorter(trial_game_field_two)
     print(game_field)
     
