@@ -1,5 +1,5 @@
 import random
-from flight_battle_work_templates import trial_game_field_two
+from flight_battle_work_templates import trial_game_field_two, trial_game_field_one, specific_card_dic_two
 
 
 def game_field_template_gen():
@@ -55,9 +55,8 @@ def deck_shuffle(terrain_trick):
         deck.remove(card)
     return out_deck
 
-# maybe think about refigering this with unque code numbers for each card. might be an easier way of doing what im trying to do  
+
 def computer_play_field_sorter(game_field):
-    card_dupe_slip = False
     r_num = len(game_field['R'])
     l_num = len(game_field['L'])
     if r_num > l_num:
@@ -69,25 +68,32 @@ def computer_play_field_sorter(game_field):
     card_list = []
     for numbers in range(1, out_num+1):
         specific_card_dic = {}
-        if game_field['R'][numbers + r_num]['on_map'] == False or game_field['L'][numbers + l_num]['on_map'] == False:
-            
+        if game_field['R'][numbers + r_num]['on_map'] != False and game_field['L'][numbers + l_num]['on_map'] != False:
             try:
-                if game_field['R'][numbers + r_num]['on_map'] == True:
-                    specific_card_dic['R'] = {'card': game_field['R'][numbers + r_num]['card'], 'coordinate': numbers + r_num}
-                else:
-                    specific_card_dic['R'] = [{'card': game_field['R'][numbers + r_num]['card'], 'coordinate': numbers + r_num}, {'card': game_field['R'][numbers + r_num + 1]['card'], 'coordinate': numbers + r_num + 1}]
-                    r_num += 2
+                specific_card_dic['L'] = {'card': game_field['L'][numbers + l_num]['card'], 'coordinate': numbers + l_num}
             except Exception:
                 pass
             try:
-                if game_field['L'][numbers + l_num]['on_map'] == True:
-                    specific_card_dic['L'] = {'card': game_field['L'][numbers + l_num]['card'], 'coordinate': numbers + l_num}
-                else:
+                specific_card_dic['R'] = {'card': game_field['R'][numbers + r_num]['card'], 'coordinate': numbers + r_num}
+            except Exception:
+                pass
+            specific_card_dic['on_map'] = True
+        else:
+            try:
+                if game_field['L'][numbers + r_num]['on_map'] == False:
                     specific_card_dic['L'] = [{'card': game_field['L'][numbers + l_num]['card'], 'coordinate': numbers + l_num}, {'card': game_field['L'][numbers + l_num + 1]['card'], 'coordinate': numbers + l_num + 1}]
-                    l_num += 2
-            except Exception:
+                    r_num -= 2
+            except KeyError:
                 pass
-        card_list.append(specific_card_dic)
+            try:
+                if game_field['R'][numbers + r_num]['on_map'] == False:
+                    specific_card_dic['R'] = [{'card': game_field['R'][numbers + r_num]['card'], 'coordinate': numbers + r_num}, {'card': game_field['R'][numbers + r_num + 1]['card'], 'coordinate': numbers + r_num + 1}]
+                    l_num -= 2
+            except KeyError:
+                pass
+            specific_card_dic['on_map'] = False
+        if specific_card_dic != {'on_map': False}:
+            card_list.append(specific_card_dic)
     return card_list
 
 class Players:
@@ -105,6 +111,10 @@ class Players:
             self.location = {'side': 'R', 'coordinate': 0}
         self.test_check = False
         
+    def test_settings(self, test_setting):
+        if test_setting == 'location':
+            self.location = {'side': self.l_r, 'coordinate': 7}
+
     def set_test(self):
         self.test_check = True
     
@@ -166,21 +176,21 @@ class Players:
                     current_hand.remove(card)
             self.hand = current_hand
     
+    def computer_swap_decision_maker(self, computer_intergrated_game_field, enemy_location, decide):
+        for items in computer_intergrated_game_field:
+            if self.l_r == self.location['side']:
+                if type(items[self.location['side']]) == list:
+                    for item in items[self.location['side']]:
+                        if item['coordinate'] > self.location['coordinate']:
+
+    
     def computer_trick_card_selectors(self, game_field, enemy_location):
         while True:
+            computer_intergrated_game_field = computer_play_field_sorter(game_field)
             trick_card_selector_list =[]
             if 'swap/pickup' in self.hand:
                 trick_card_selector_list.append({'move': 'pickup', 'card': 'swap/pickup'})
-                if self.l_r == self.location['side']:
-                    pass
-                    # this is gonna be really hard. possibly worth thinking this through fully before i make any further moves. 
-                else:
-                    pass
-                if self.l_r != enemy_location['side']:
-                    pass
-                else:
-                    pass
-                    
+
             if 'shift/rotate' in self.hand:
                 pass
             if 'forwards/backwards' in self.hand:
@@ -225,6 +235,23 @@ if __name__ == '__main__':
     # computer = Players(False, 'L')
     # game_field_template = game_field_template_gen()
     # game_field = game_field_transformer(game_field_template)
-    game_field = computer_play_field_sorter(trial_game_field_two)
-    print(game_field)
+    game_field = computer_play_field_sorter(trial_game_field_one)
+    game_fields = computer_play_field_sorter(trial_game_field_two)
+    # print(game_fields)
+    # num = 0
+    # dic = {}
+    # for items in game_fields:
+    #     dic[num] = items
+    #     num += 1
+    # num = 0
+    # for items in specific_card_dic_two:
+    #     print(items)
+    #     print(dic[num])
+    #     if items != dic[num]:
+    #         print(False)
+    #     else:
+    #         print(True)
+    #     num += 1
+
+
     
