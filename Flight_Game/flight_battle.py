@@ -96,6 +96,61 @@ def computer_play_field_sorter(game_field):
             card_list.append(specific_card_dic)
     return card_list
 
+def computer_ai_swap_card_sorter(computer_intergrated_game_field, l_r, location):
+    if l_r == 'L':
+        oppostion = 'R'
+    else:
+        oppostion = 'L'
+    select_path = False
+    this_user_cards_ahead = []
+    other_side_addition_list = []
+    for sides in [l_r, oppostion]:
+        if location['side'] != l_r and sides == l_r:
+            pass
+        else:
+            for items in computer_intergrated_game_field:
+                try:
+                    check = items[sides]
+                except KeyError:
+                    pass
+                else:
+                    if location['side'] == l_r and sides != l_r:
+                        if type(items[sides]) == list:
+                            for item in items[sides]:
+                                item['sides'] = sides
+                                other_side_addition_list.append(item)
+                        else:
+                            items[sides]['side'] = sides
+                            other_side_addition_list.append(items[sides])
+                    else:
+                        if type(items[sides]) == list:
+                            for item in items[sides]:
+                                if l_r == location['side']:
+                                    if item['coordinate'] > location['coordinate']:
+                                        item['side'] = sides
+                                        this_user_cards_ahead.append(item)
+                                else:
+                                    if item['coordinate'] < location['coordinate']:
+                                        item['side'] = sides
+                                        this_user_cards_ahead.append(item)  
+                                        select_path = True   
+                        else:
+                            if l_r == location['side']:
+                                if items[sides]['coordinate'] > location['coordinate']:
+                                    items[sides]['side'] = sides
+                                    this_user_cards_ahead.append(items[sides])
+                            else:
+                                if items[sides]['coordinate'] < location['coordinate']:
+                                    items[sides]['side'] = sides
+                                    this_user_cards_ahead.append(items[sides])    
+                                    select_path = True                                 
+    if len(other_side_addition_list) != 0:
+        for items in reversed(other_side_addition_list):
+            this_user_cards_ahead.append(items)
+    if select_path == True:
+        this_user_cards_ahead = list(reversed(this_user_cards_ahead))
+    return this_user_cards_ahead
+
 class Players:
     def __init__(self, is_human, l_r):
         self.is_human = is_human
@@ -111,9 +166,12 @@ class Players:
             self.location = {'side': 'R', 'coordinate': 0}
         self.test_check = False
         
-    def test_settings(self, test_setting):
+    def test_settings(self, test_setting, finness = None):
         if test_setting == 'location':
-            self.location = {'side': self.l_r, 'coordinate': 7}
+            if finness == None:
+                self.location = {'side': self.l_r, 'coordinate': 7}
+            else:
+                self.location = finness
 
     def set_test(self):
         self.test_check = True
@@ -177,11 +235,72 @@ class Players:
             self.hand = current_hand
     
     def computer_swap_decision_maker(self, computer_intergrated_game_field, enemy_location, decide):
-        for items in computer_intergrated_game_field:
-            if self.l_r == self.location['side']:
-                if type(items[self.location['side']]) == list:
-                    for item in items[self.location['side']]:
-                        if item['coordinate'] > self.location['coordinate']:
+        computer_ahead = computer_ai_swap_card_sorter(computer_intergrated_game_field, self.l_r, self.location)
+        if self.l_r == 'L':
+            op_l_r = 'R'
+        else:
+            op_l_r = 'L'
+        opp_ahead = computer_ai_swap_card_sorter(computer_intergrated_game_field, op_l_r, enemy_location)
+        temp_collated_list = []
+        for items in computer_ahead:
+            if items in opp_ahead:
+                opp_ahead.remove(items)
+                temp_collated_list.append(items)
+        for items in temp_collated_list:
+            if items in computer_ahead:
+                computer_ahead.remove(items)
+        
+        cards_to_be_moved = []
+        move_choice = False
+        for cards in computer_ahead:
+            if computer_ahead.index(cards) != 0 and computer_ahead.index(cards) != len(computer_ahead)-1:
+                if computer_ahead[computer_ahead.index(cards)-1]['card'] == computer_ahead[computer_ahead.index(cards)+1]['card']:
+                    cards_to_be_moved.append([cards, computer_ahead[computer_ahead.index(cards)+1]['card']])
+        if len(cards_to_be_moved) != 0:
+            move_choice = random.choice(cards_to_be_moved)
+                    
+        
+        op_cards_to_be_moved = []
+        op_move_choice = False
+        for cards in opp_ahead:
+            card_check = False
+            if opp_ahead.index(cards) != 0:
+                if cards['card'] == opp_ahead[opp_ahead.index(cards)-1]['card']:
+                    card_check = True
+            if opp_ahead.index(cards) != len(opp_ahead)-1:
+                if cards ['card'] == opp_ahead[opp_ahead.index(cards)+1]['card']:
+                    if card_check == True:
+                        op_move_choice = cards
+                    card_check = True
+            if card_check == True:
+                op_cards_to_be_moved.append([cards, cards['card']])
+        if op_move_choice == False:
+            op_move_choice = random.choice(op_cards_to_be_moved)
+        if move_choice[0]['side'] == 'L':
+            com_other_side = 'R'
+        else:
+            com_other_side = 'L'
+        if op_move_choice[0]['side'] == 'R':
+            op_other_side = 'L'
+        else:
+            op_other_side = 'R'
+            
+        if move_choice != False and op_move_choice != False:
+            for cards in computer_intergrated_game_field: 
+                if cards[move_choice[0]['side']]['card'] == move_choice[0]['card'] and cards[move_choice[0]['side']]['coordinate'] == move_choice[0]['coordinate']:
+                    
+        
+        print(move_choice)
+        print(op_move_choice)
+                    
+                    
+            
+
+
+                        
+                    
+        
+
 
     
     def computer_trick_card_selectors(self, game_field, enemy_location):
@@ -232,26 +351,12 @@ class Players:
             
 
 if __name__ == '__main__':
-    # computer = Players(False, 'L')
-    # game_field_template = game_field_template_gen()
-    # game_field = game_field_transformer(game_field_template)
-    game_field = computer_play_field_sorter(trial_game_field_one)
-    game_fields = computer_play_field_sorter(trial_game_field_two)
-    # print(game_fields)
-    # num = 0
-    # dic = {}
-    # for items in game_fields:
-    #     dic[num] = items
-    #     num += 1
-    # num = 0
-    # for items in specific_card_dic_two:
-    #     print(items)
-    #     print(dic[num])
-    #     if items != dic[num]:
-    #         print(False)
-    #     else:
-    #         print(True)
-    #     num += 1
-
-
+    lits = []
+    computer = Players(False, 'L')
+    op_computer = Players(False, 'R')
+    game_field = computer_play_field_sorter(trial_game_field_two)
+    computer.test_settings('location', {'side': 'R', 'coordinate': 8})
+    op_computer.test_settings('location', {'side': 'L', 'coordinate': 8})
+    # game_fields = computer_play_field_sorter(trial_game_field_two)
+    computer.computer_swap_decision_maker(game_field, op_computer.return_location(), False)
     
