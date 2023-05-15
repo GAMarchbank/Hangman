@@ -1,5 +1,6 @@
 import random
 from flight_battle_work_templates import trial_game_field_two, trial_game_field_one, specific_card_dic_two
+from copy import deepcopy
 
 
 def game_field_template_gen():
@@ -235,7 +236,7 @@ class Players:
             self.hand = current_hand
     
     def computer_swap_decision_maker(self, computer_intergrated_game_field, enemy_location, decide):
-        computer_ahead = computer_ai_swap_card_sorter(computer_intergrated_game_field, self.l_r, self.location)
+        computer_ahead = computer_ai_swap_card_sorter(computer_intergrated_game_field, self.l_r, self.location)        
         if self.l_r == 'L':
             op_l_r = 'R'
         else:
@@ -249,7 +250,6 @@ class Players:
         for items in temp_collated_list:
             if items in computer_ahead:
                 computer_ahead.remove(items)
-        
         cards_to_be_moved = []
         move_choice = False
         for cards in computer_ahead:
@@ -258,8 +258,6 @@ class Players:
                     cards_to_be_moved.append([cards, computer_ahead[computer_ahead.index(cards)+1]['card']])
         if len(cards_to_be_moved) != 0:
             move_choice = random.choice(cards_to_be_moved)
-                    
-        
         op_cards_to_be_moved = []
         op_move_choice = False
         for cards in opp_ahead:
@@ -284,10 +282,118 @@ class Players:
             op_other_side = 'L'
         else:
             op_other_side = 'R'
-            
+        same_card_check = False
+        comp_swap_card = None
+        op_swap_card = None 
         if move_choice != False and op_move_choice != False:
-            for cards in computer_intergrated_game_field: 
-                if cards[move_choice[0]['side']]['card'] == move_choice[0]['card'] and cards[move_choice[0]['side']]['coordinate'] == move_choice[0]['coordinate']:
+            for cards in computer_intergrated_game_field:
+                for sides in ['L', 'R']:
+                    try:
+                        cards[sides] 
+                    except KeyError:
+                        pass
+                    else:
+                        if type(cards[sides]) == list:
+                            check_num = 0
+                            if ({'card': move_choice[0]['card'], 'coordinate': move_choice[0]['coordinate']} in cards[sides]) and sides == move_choice[0]['side']:
+                                comp_swap_card = cards
+                                check_num += 1
+                            if ({'card': op_move_choice[0]['card'], 'coordinate': op_move_choice[0]['coordinate']} in cards[sides]) and sides == op_move_choice[0]['side']:
+                                op_swap_card = cards
+                                check_num +=1
+                            if check_num == 2: 
+                                same_card_check = True
+                        else:
+                            if (cards[sides]['card'] == move_choice[0]['card'] and cards[sides]['coordinate'] == move_choice[0]['coordinate']) and sides == move_choice[0]['side']:
+                                comp_swap_card = cards
+                                if (cards[sides]['card'] == op_move_choice[0]['card'] and cards[sides]['coordinate'] == op_move_choice[0]['coordinate']) and sides == op_move_choice[0]['side']:
+                                    op_swap_card = cards
+                                    same_card_check = True
+                            if (cards[sides]['card'] == op_move_choice[0]['card'] and cards[sides]['coordinate'] == op_move_choice[0]['coordinate']) and sides == op_move_choice[0]['side']:
+                                op_swap_card = cards
+            un_swappable_cards_pile = deepcopy(computer_ahead)
+            swap_card_lst = []
+            for cards in opp_ahead:
+                if cards in un_swappable_cards_pile:
+                    pass
+                else:
+                    un_swappable_cards_pile.append(cards)
+            for cards in computer_intergrated_game_field:
+                for sides in ['L', 'R']:
+                    if sides == 'L':
+                        other_side = 'R'
+                    else:
+                        other_side = 'L'
+                    try:
+                        cards[sides]
+                    except KeyError:
+                        pass
+                    else:
+                        if type(cards[sides]) == list:
+                            if ({'card': cards[sides][0]['card'], 'coordinate': cards[sides][0]['coordinate'], 'side': sides} not in un_swappable_cards_pile) and ({'card': cards[sides][1]['card'], 'coordinate': cards[sides][1]['coordinate'], 'side': other_side} not in un_swappable_cards_pile):
+                                if cards not in swap_card_lst:
+                                    swap_card_lst.append(cards) 
+                        elif ({'card': cards[sides]['card'], 'coordinate': cards[sides]['coordinate'], 'side': sides} not in un_swappable_cards_pile) and ({'card': cards[other_side]['card'], 'coordinate': cards[other_side]['coordinate'], 'side': other_side} not in un_swappable_cards_pile): 
+                            if cards not in swap_card_lst:
+                                swap_card_lst.append(cards)
+
+                                
+            while True:
+                if same_card_check == True:
+                    for cards in swap_card_lst:
+                        try:
+                            cards[move_choice[0]['side']]
+                        except KeyError:
+                            pass
+                        else:
+                            if type(cards[move_choice[0]['side']]) == list:
+                                if (cards[move_choice[0]['side']][0]['card'] == move_choice[1] and cards[move_choice[0]['side']][1]['card'] == op_move_choice[1]) or (cards[move_choice[0]['side']][1]['card'] == move_choice[1] and cards[move_choice[0]['side']][0]['card'] == move_choice[1]):
+                                    selected_card_to_swap = cards
+                                    break
+                            elif cards[move_choice[0]['side']]['card'] == move_choice[1] and cards[op_move_choice[0]['side']]['card'] == op_move_choice[1]:
+                                selected_card_to_swap = cards
+                                break
+                    same_card_check = False
+                    continue
+                elif same_card_check == False and (move_choice != False or op_move_choice != False):
+                    choice_list = []
+                    if move_choice != False:
+                        choice_list.append(move_choice)
+                    if op_move_choice != False:
+                        choice_list.append(op_move_choice)
+                    move = random.choice(choice_list)
+                    for cards in swap_card_lst:
+                        try:
+                            cards[move[0]['side']]
+                        except KeyError:
+                            pass
+                        else:
+                            if type(cards[move[0]['side']]) == list:
+                                if cards[move[0]['side']][0]['card'] == move[1]:
+                                    selected_card_to_swap = cards
+                                    break
+                    if move == move_choice:
+                        move_choice = False
+                    elif move == op_move_choice:
+                        op_move_choice = False
+                    continue
+                else:
+                    selected_card_to_swap = None
+                    break
+            
+            if selected_card_to_swap != None:
+                if decide == False:
+                    return [,selected_card_to_swap]    
+                else:
+                    return True
+            else:
+                return False   
+                        
+                            
+                            
+                            
+                
+                                
                     
         
         print(move_choice)
