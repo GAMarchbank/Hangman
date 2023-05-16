@@ -146,7 +146,7 @@ class test_ai_game_field_view(unittest.TestCase):
         self.assertEqual(new, specific_card_dic_two,'The game field with added cards does not match the template.')
 
 class test_ai_game_field_operations(unittest.TestCase):
-    def setup(self):
+    def setUp(self):
         self.computer = flight_battle.Players(False, 'R')
         self.op_computer = flight_battle.Players(False, 'L')
         self.computer.new_game_create_hand()
@@ -156,13 +156,21 @@ class test_ai_game_field_operations(unittest.TestCase):
         self.game_field_one_computer_view = flight_battle.computer_play_field_sorter(self.game_field)
         self.game_field_two_computer_view = flight_battle.computer_play_field_sorter(self.game_field_two)
 
-    def test_ai_swap_decide_operator_one(self):
-        self.assertFalse(self.computer.computer_swap_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), False), 'The computer decided it could make a swap move at the start of this game on a play field with no addional cards.')
-        self.assertFalse(self.computer.computer_swap_decision_maker(self.game_field_two_computer_view, self.op_computer.return_location(), False), 'The computer decided it could make a swap move at the start of this game on a play field with additional cards added.')
+    def test_ai_swap_decide_operator(self):
+        self.assertFalse(self.computer.computer_swap_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), True), 'The computer decided it could make a swap move at the start of this game on a play field with no addional cards.')
+        self.assertFalse(self.computer.computer_swap_decision_maker(self.game_field_two_computer_view, self.op_computer.return_location(), True), 'The computer decided it could make a swap move at the start of this game on a play field with additional cards added.')
         self.computer.test_settings('location')
         self.op_computer.test_settings('location')
-        self.assertTrue(self.computer.computer_swap_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), False), 'The computer has decided it can not make a move during this game with no addtional cards added.')
-        self.assertTrue(self.computer.computer_swap_decision_maker(self.game_field_two_computer_view, self.op_computer.return_location(), False), 'The computer has decied it can not make a move during this game with addionial cards added.')
+        self.assertTrue(self.computer.computer_swap_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), True), 'The computer has decided it can not make a move during this game with no addtional cards added.')
+        self.assertTrue(self.computer.computer_swap_decision_maker(self.game_field_two_computer_view, self.op_computer.return_location(), True), 'The computer has decied it can not make a move during this game with addionial cards added.')
+        
+    def test_ai_shift_decide_operator(self):
+        self.assertFalse(self.computer.computer_shift_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), True), 'The computer has decided that it could make a shift move at the start of this game on a playfield with no additional cards.')
+        self.assertFalse(self.computer.computer_shift_decision_maker(self.game_field_two_computer_view, self.op_computer.return_location(), True), 'The computer has decided that it can make a shift move at the start of this game on a playfield with additional cards added.')
+        self.computer.test_settings('location')
+        self.op_computer.test_settings('location')
+        self.assertTrue(self.computer.computer_shift_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), True), 'The computer has decided that it cannot make a move during this game with no additonal cards added.')
+        self.assertTrue(self.computer.computer_shift_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), True), 'The computer has decided that it can not make a move during this game with additional cards added.')
 
 
 
