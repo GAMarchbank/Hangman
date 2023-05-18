@@ -118,7 +118,7 @@ def computer_ai_swap_card_sorter(computer_intergrated_game_field, l_r, location)
                     if location['side'] == l_r and sides != l_r:
                         if type(items[sides]) == list:
                             for item in items[sides]:
-                                item['sides'] = sides
+                                item['side'] = sides
                                 other_side_addition_list.append(item)
                         else:
                             items[sides]['side'] = sides
@@ -395,8 +395,21 @@ class Players:
             return False   
      
     # turn necessary sections of the above function into independent functions so you can call apon them here to make this simpler to write. 
-    def computer_shift_decision_maker(self, game_field, op_location, decide):
-        pass
+    def computer_shift_decision_maker(self, computer_intergrated_game_field, enemy_location, decide):
+        if self.l_r == 'R':
+            op_l_r = 'L'
+        else:
+            op_l_r = 'R'
+        computer_ahead = computer_ai_swap_card_sorter(computer_intergrated_game_field, self.l_r, self.location) 
+        opp_ahead = computer_ai_swap_card_sorter(computer_intergrated_game_field, op_l_r, enemy_location)
+        temp_list = []
+        for cards in opp_ahead:
+            if cards not in computer_ahead:
+                temp_list.append(cards)
+
+                
+        
+        
     
     def computer_trick_card_selectors(self, game_field, enemy_location):
         while True:
@@ -458,6 +471,7 @@ if __name__ == '__main__':
     op_computer.test_settings('location', {'side': 'R', 'coordinate': 3})
     game_field_two = computer_play_field_sorter(trial_game_field_two)
     game_field_one = computer_play_field_sorter(trial_game_field_one)
-    computer.computer_swap_decision_maker(game_field_one, op_computer.return_location(), True)
-    computer.computer_swap_decision_maker(game_field_two, op_computer.return_location(), True)
+    computer.computer_shift_decision_maker(game_field_one, op_computer.return_location(), True)
+    print('\n\n')
+    computer.computer_shift_decision_maker(game_field_two, op_computer.return_location(), True)
     

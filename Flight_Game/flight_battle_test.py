@@ -169,7 +169,7 @@ class test_ai_game_field_operations(unittest.TestCase):
         self.assertFalse(self.computer.computer_shift_decision_maker(self.game_field_two_computer_view, self.op_computer.return_location(), True), 'The computer has decided that it can make a shift move at the start of this game on a playfield with additional cards added.')
         self.computer.test_settings('location')
         self.op_computer.test_settings('location')
-        self.assertTrue(self.computer.computer_shift_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), True), 'The computer has decided that it cannot make a move during this game with no additonal cards added.')
+        self.assertTrue(self.computer.computer_shift_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), True), 'The computer has decided that it can not make a move during this game with no additonal cards added.')
         self.assertTrue(self.computer.computer_shift_decision_maker(self.game_field_one_computer_view, self.op_computer.return_location(), True), 'The computer has decided that it can not make a move during this game with additional cards added.')
 
 
